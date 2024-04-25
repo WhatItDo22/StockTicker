@@ -1,62 +1,43 @@
 const express = require('express');
 const { MongoClient } = require('mongodb');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// MongoDB connection URL
-const url = 'mongodb+srv://kaspalanamol:pass@stock.xiozwgc.mongodb.net/';
 
-// Serve static files from the "public" directory
-app.use(express.static('public'));
+const uri = "mongodb+srv://kaspalanamol:pass@stock.xiozwgc.mongodb.net/";
 
-// Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Home route
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/home.html');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Process route
-app.get('/process', (req, res) => {
-  const searchTerm = req.query.searchTerm;
-  const searchType = req.query.searchType;
-
-  // Connect to MongoDB
-  MongoClient.connect(url, (err, client) => {
-    if (err) {
-      console.error('Error connecting to MongoDB:', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
+app.get('/search', async (req, res) => {
+  const client = new MongoClient(uri);
+  try {
+    await client.connect();
     const db = client.db('Stock');
     const collection = db.collection('PublicCompanies');
+    const searchField = req.query.searchBy === 'ticker' ? 'stockTicker' : 'companyName';
+    const query = { [searchField]: req.query.searchValue };
+    const results = await collection.find(query).toArray();
 
-    // Determine the search query based on the search type
-    const query = searchType === 'ticker' ? { ticker: searchTerm } : { company: { $regex: searchTerm, $options: 'i' } };
-
-    // Find the matching companies in the database
-    collection.find(query).toArray((err, companies) => {
-      if (err) {
-        console.error('Error querying the database:', err);
-        res.status(500).send('Internal Server Error');
-        return;
-      }
-
-      console.log('Matching companies:', companies);
-
-      // Send the matching companies as a JSON response
-      res.json(companies);
-
-      // Close the MongoDB connection
-      client.close();
-    });
-  });
+    if (results.length > 0) {
+      res.json(results);
+    } else {
+      res.send('No results found.');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error connecting to database.");
+  } finally {
+    await client.close();
+  }
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
