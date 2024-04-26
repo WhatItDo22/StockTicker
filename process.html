@@ -46,7 +46,7 @@
           </tr>
         </thead>
         <tbody>
-          <% companies.forEach(company => { %>
+          <% companies.forEach(function(company) { %>
             <tr>
               <td><%= company.companyName %></td>
               <td><%= company.stockTicker %></td>
