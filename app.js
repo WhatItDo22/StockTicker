@@ -11,6 +11,9 @@ const url = 'mongodb+srv://kaspalanamol:pass@stock.xiozwgc.mongodb.net/';
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+
 // Home route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'home.html'));
@@ -36,8 +39,8 @@ app.get('/process', async (req, res) => {
     console.log('Database query completed');
     console.log('Matching companies:', companies);
 
-    // Render the process.html file with the matching companies
-    res.sendFile(path.join(__dirname, 'process.html'), { companies });
+    // Render the process.ejs file with the matching companies
+    res.render('process', { companies });
 
     // Close the MongoDB connection
     client.close();
