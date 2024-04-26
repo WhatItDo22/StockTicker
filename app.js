@@ -22,7 +22,7 @@ app.get('/process', (req, res) => {
   const searchType = req.query.searchType;
 
   // Connect to MongoDB
-  MongoClient.connect(url, (err, client) => {
+  MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
     if (err) {
       console.error('Error connecting to MongoDB:', err);
       res.status(500).send('Internal Server Error');
@@ -37,11 +37,12 @@ app.get('/process', (req, res) => {
 
     console.log('Starting database query');
     // Find the matching companies in the database
-    collection.find(query).toArray((err, companies) => {
+    collection.find(query).limit(10).toArray((err, companies) => {
       console.log('Database query completed');
       if (err) {
         console.error('Error querying the database:', err);
         res.status(500).send('Internal Server Error');
+        client.close();
         return;
       }
 
@@ -61,4 +62,4 @@ const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
-server.timeout = 60000; // Set timeout to 60 seconds (adjust as needed)
+server.timeout = 60000; 
