@@ -8,15 +8,12 @@ const port = process.env.PORT || 3000;
 // MongoDB connection URL
 const url = 'mongodb+srv://kaspalanamol:pass@stock.xiozwgc.mongodb.net/';
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
 // Home route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'home.html'));
+  res.sendFile(path.join(__dirname, 'home.html'));
 });
 
 // Process route
