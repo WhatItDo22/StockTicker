@@ -35,62 +35,29 @@
 </head>
 <body>
   <h1>Search Results</h1>
-  <div id="results"></div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const searchTerm = urlParams.get('searchTerm');
-      const searchType = urlParams.get('searchType');
-
-      fetch(`/process?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
-        .then(response => response.json())
-        .then(companies => {
-          const resultsDiv = document.getElementById('results');
-          resultsDiv.innerHTML = '';
-
-          if (companies.length > 0) {
-            const table = document.createElement('table');
-            const headerRow = document.createElement('tr');
-            const companyHeader = document.createElement('th');
-            companyHeader.textContent = 'Company';
-            const tickerHeader = document.createElement('th');
-            tickerHeader.textContent = 'Ticker';
-            const priceHeader = document.createElement('th');
-            priceHeader.textContent = 'Price';
-            headerRow.appendChild(companyHeader);
-            headerRow.appendChild(tickerHeader);
-            headerRow.appendChild(priceHeader);
-            table.appendChild(headerRow);
-
-            companies.forEach(company => {
-              const row = document.createElement('tr');
-              const companyCell = document.createElement('td');
-              companyCell.textContent = company.companyName;
-              const tickerCell = document.createElement('td');
-              tickerCell.textContent = company.stockTicker;
-              const priceCell = document.createElement('td');
-              priceCell.textContent = '$' + company.stockPrice.toFixed(2);
-              row.appendChild(companyCell);
-              row.appendChild(tickerCell);
-              row.appendChild(priceCell);
-              table.appendChild(row);
-            });
-
-            resultsDiv.appendChild(table);
-          } else {
-            const noResultsMessage = document.createElement('p');
-            noResultsMessage.textContent = 'No matching companies found.';
-            resultsDiv.appendChild(noResultsMessage);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          const errorMessage = document.createElement('p');
-          errorMessage.textContent = 'An error occurred while processing the request.';
-          document.getElementById('results').appendChild(errorMessage);
-        });
-    });
-  </script>
+  <div id="results">
+    <% if (companies.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Ticker</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% companies.forEach(company => { %>
+            <tr>
+              <td><%= company.companyName %></td>
+              <td><%= company.stockTicker %></td>
+              <td>$<%= company.stockPrice.toFixed(2) %></td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>No matching companies found.</p>
+    <% } %>
+  </div>
 </body>
 </html>
