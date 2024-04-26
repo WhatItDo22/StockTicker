@@ -14,50 +14,59 @@
       color: #333;
       text-align: center;
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
+    .result {
+      background-color: #f4f4f4;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 4px;
     }
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-    }
-    th {
-      background-color: #f2f2f2;
-      font-weight: bold;
-    }
-    tr:hover {
-      background-color: #f5f5f5;
+    .result p {
+      margin: 0;
     }
   </style>
 </head>
 <body>
   <h1>Search Results</h1>
-  <div id="results">
-    <% if (companies.length > 0) { %>
-      <table>
-        <thead>
-          <tr>
-            <th>Company</th>
-            <th>Ticker</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% companies.forEach(function(company) { %>
-            <tr>
-              <td><%= company.companyName %></td>
-              <td><%= company.stockTicker %></td>
-              <td>$<%= company.stockPrice.toFixed(2) %></td>
-            </tr>
-          <% }); %>
-        </tbody>
-      </table>
-    <% } else { %>
-      <p>No matching companies found.</p>
-    <% } %>
-  </div>
+  <div id="results"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchTerm = urlParams.get('searchTerm');
+      const searchType = urlParams.get('searchType');
+
+      fetch(`/process?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
+        .then(response => response.text())
+        .then(results => {
+          const resultsDiv = document.getElementById('results');
+          resultsDiv.innerHTML = '';
+
+          if (results.trim() !== 'No matching companies found.') {
+            const companies = results.split('\n\n');
+            companies.forEach(company => {
+              const [name, ticker, price] = company.split('\n');
+              const resultDiv = document.createElement('div');
+              resultDiv.classList.add('result');
+              resultDiv.innerHTML = `
+                <p>${name}</p>
+                <p>${ticker}</p>
+                <p>${price}</p>
+              `;
+              resultsDiv.appendChild(resultDiv);
+            });
+          } else {
+            const noResultsMessage = document.createElement('p');
+            noResultsMessage.textContent = 'No matching companies found.';
+            resultsDiv.appendChild(noResultsMessage);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          const errorMessage = document.createElement('p');
+          errorMessage.textContent = 'An error occurred while processing the request.';
+          document.getElementById('results').appendChild(errorMessage);
+        });
+    });
+  </script>
 </body>
 </html>
