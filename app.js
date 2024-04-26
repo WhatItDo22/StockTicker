@@ -35,8 +35,10 @@ app.get('/process', (req, res) => {
     // Determine the search query based on the search type
     const query = searchType === 'ticker' ? { stockTicker: searchTerm } : { companyName: { $regex: searchTerm, $options: 'i' } };
 
+    console.log('Starting database query');
     // Find the matching companies in the database
     collection.find(query).toArray((err, companies) => {
+      console.log('Database query completed');
       if (err) {
         console.error('Error querying the database:', err);
         res.status(500).send('Internal Server Error');
@@ -53,9 +55,8 @@ app.get('/process', (req, res) => {
     });
   });
 });
-
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
+server.timeout = 60000;
