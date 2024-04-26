@@ -33,7 +33,7 @@ app.get('/process', (req, res) => {
     const collection = db.collection('PublicCompanies');
 
     // Determine the search query based on the search type
-    const query = searchType === 'ticker' ? { ticker: searchTerm } : { company: { $regex: searchTerm, $options: 'i' } };
+    const query = searchType === 'ticker' ? { stockTicker: searchTerm } : { companyName: { $regex: searchTerm, $options: 'i' } };
 
     // Find the matching companies in the database
     collection.find(query).toArray((err, companies) => {
