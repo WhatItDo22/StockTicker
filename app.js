@@ -55,8 +55,10 @@ app.get('/process', (req, res) => {
     });
   });
 });
+
 // Start the server
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-server.timeout = 60000;
+
+server.timeout = 60000; // Set timeout to 60 seconds (adjust as needed)
