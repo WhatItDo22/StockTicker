@@ -36,11 +36,11 @@
             companies.forEach(company => {
               const row = document.createElement('tr');
               const companyCell = document.createElement('td');
-              companyCell.textContent = company.company;
+              companyCell.textContent = company.companyName;
               const tickerCell = document.createElement('td');
-              tickerCell.textContent = company.ticker;
+              tickerCell.textContent = company.stockTicker;
               const priceCell = document.createElement('td');
-              priceCell.textContent = company.price;
+              priceCell.textContent = company.stockPrice;
               row.appendChild(companyCell);
               row.appendChild(tickerCell);
               row.appendChild(priceCell);
