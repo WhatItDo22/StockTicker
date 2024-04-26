@@ -17,18 +17,13 @@ app.get('/', (req, res) => {
 });
 
 // Process route
-app.get('/process', (req, res) => {
+app.get('/process', async (req, res) => {
   const searchTerm = req.query.searchTerm;
   const searchType = req.query.searchType;
 
-  // Connect to MongoDB
-  MongoClient.connect(url, { useUnifiedTopology: true }, (err, client) => {
-    if (err) {
-      console.error('Error connecting to MongoDB:', err);
-      res.status(500).send('Internal Server Error');
-      return;
-    }
-
+  try {
+    // Connect to MongoDB
+    const client = await MongoClient.connect(url);
     const db = client.db('Stock');
     const collection = db.collection('PublicCompanies');
 
@@ -37,24 +32,20 @@ app.get('/process', (req, res) => {
 
     console.log('Starting database query');
     // Find the matching companies in the database
-    collection.find(query).limit(10).toArray((err, companies) => {
-      console.log('Database query completed');
-      if (err) {
-        console.error('Error querying the database:', err);
-        res.status(500).send('Internal Server Error');
-        client.close();
-        return;
-      }
+    const companies = await collection.find(query).limit(10).toArray();
+    console.log('Database query completed');
 
-      console.log('Matching companies:', companies);
+    console.log('Matching companies:', companies);
 
-      // Pass the matching companies as JSON response
-      res.json(companies);
+    // Pass the matching companies as JSON response
+    res.json(companies);
 
-      // Close the MongoDB connection
-      client.close();
-    });
-  });
+    // Close the MongoDB connection
+    client.close();
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 // Start the server
