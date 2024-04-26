@@ -34,11 +34,10 @@ app.get('/process', async (req, res) => {
     // Find the matching companies in the database
     const companies = await collection.find(query).limit(10).toArray();
     console.log('Database query completed');
-
     console.log('Matching companies:', companies);
 
-    // Pass the matching companies as JSON response
-    res.json(companies);
+    // Render the process.html file with the matching companies
+    res.sendFile(path.join(__dirname, 'process.html'), { companies });
 
     // Close the MongoDB connection
     client.close();
@@ -52,4 +51,3 @@ app.get('/process', async (req, res) => {
 const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
