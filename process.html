@@ -55,46 +55,46 @@
   <h1>Search Results</h1>
   <div id="results"></div>
 
- <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const searchTerm = urlParams.get('searchTerm');
-    const searchType = urlParams.get('searchType');
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchTerm = urlParams.get('searchTerm');
+      const searchType = urlParams.get('searchType');
 
-    fetch(`/process?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
-      .then(response => response.text())
-      .then(results => {
-        const resultsDiv = document.getElementById('results');
-        resultsDiv.innerHTML = '';
+      fetch(`/process?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
+        .then(response => response.text())
+        .then(results => {
+          const resultsDiv = document.getElementById('results');
+          resultsDiv.innerHTML = '';
 
-        if (results.trim() !== 'No matching companies found.') {
-          const companies = results.split('\n\n').filter(company => company.trim() !== '');
-          companies.forEach(company => {
-            const [name, ticker, price] = company.split('\n');
-            const resultDiv = document.createElement('div');
-            resultDiv.classList.add('result');
-            resultDiv.innerHTML = `
-              <p class="company-name">${name.replace('Company: ', '')}</p>
-              <p class="stock-ticker">${ticker.replace('Ticker: ', '')}</p>
-              <p class="stock-price">${price.replace('Price: ', '')}</p>
-            `;
-            resultsDiv.appendChild(resultDiv);
-          });
-        } else {
-          const noResultsMessage = document.createElement('p');
-          noResultsMessage.classList.add('no-results');
-          noResultsMessage.textContent = 'No matching companies found.';
-          resultsDiv.appendChild(noResultsMessage);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        const errorMessage = document.createElement('p');
-        errorMessage.classList.add('error-message');
-        errorMessage.textContent = 'An error occurred while processing the request.';
-        document.getElementById('results').appendChild(errorMessage);
-      });
-  });
-</script>
+          if (results.trim() !== 'No matching companies found.') {
+            const companies = results.trim().split('\n\n');
+            companies.forEach(company => {
+              const [name, ticker, price] = company.split('\n');
+              const resultDiv = document.createElement('div');
+              resultDiv.classList.add('result');
+              resultDiv.innerHTML = `
+                <p class="company-name">${name.replace('Company: ', '')}</p>
+                <p class="stock-ticker">${ticker.replace('Ticker: ', '')}</p>
+                <p class="stock-price">${price.replace('Price: ', '')}</p>
+              `;
+              resultsDiv.appendChild(resultDiv);
+            });
+          } else {
+            const noResultsMessage = document.createElement('p');
+            noResultsMessage.classList.add('no-results');
+            noResultsMessage.textContent = 'No matching companies found.';
+            resultsDiv.appendChild(noResultsMessage);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          const errorMessage = document.createElement('p');
+          errorMessage.classList.add('error-message');
+          errorMessage.textContent = 'An error occurred while processing the request.';
+          document.getElementById('results').appendChild(errorMessage);
+        });
+    });
+  </script>
 </body>
 </html>
