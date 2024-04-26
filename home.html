@@ -1,17 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Stock Search</title>
+    <meta charset="UTF-8">
+    <title>Stock Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px auto;
+            width: 80%;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+    </style>
 </head>
 <body>
-  <h1>Stock Search</h1>
-  <form action="/process" method="GET">
-    <input type="text" name="searchTerm" placeholder="Enter stock ticker or company name" required>
-    <br>
-    <input type="radio" name="searchType" value="ticker" checked> Stock Ticker
-    <input type="radio" name="searchType" value="company"> Company Name
-    <br>
-    <button type="submit">Search</button>
-  </form>
+    <h1>Stock Search</h1>
+    <form action="/process" method="GET">
+        <input type="text" name="searchTerm" placeholder="Enter stock ticker or company name" required>
+        <br>
+        <label>
+            <input type="radio" name="searchType" value="ticker" checked> Stock Ticker
+        </label>
+        <label>
+            <input type="radio" name="searchType" value="company"> Company Name
+        </label>
+        <br>
+        <button type="submit">Search</button>
+    </form>
 </body>
 </html>
