@@ -1,66 +1,68 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Search Results</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-  <h1>Search Results</h1>
-  <div id="results"></div>
+    <h1>Search Results</h1>
+    <div id="results">Loading results...</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const searchTerm = urlParams.get('searchTerm');
-      const searchType = urlParams.get('searchType');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('searchTerm');
+            const searchType = urlParams.get('searchType');
 
-      fetch(`/search?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
-        .then(response => response.json())
-        .then(companies => {
-          const resultsDiv = document.getElementById('results');
-          resultsDiv.innerHTML = '';
+            fetch(`/search?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
+                .then(response => response.json())
+                .then(companies => {
+                    const resultsDiv = document.getElementById('results');
+                    resultsDiv.innerHTML = '';
 
-          if (companies.length > 0) {
-            const table = document.createElement('table');
-            const headerRow = document.createElement('tr');
-            const companyHeader = document.createElement('th');
-            companyHeader.textContent = 'Company';
-            const tickerHeader = document.createElement('th');
-            tickerHeader.textContent = 'Ticker';
-            const priceHeader = document.createElement('th');
-            priceHeader.textContent = 'Price';
-            headerRow.appendChild(companyHeader);
-            headerRow.appendChild(tickerHeader);
-            headerRow.appendChild(priceHeader);
-            table.appendChild(headerRow);
-
-            companies.forEach(company => {
-              const row = document.createElement('tr');
-              const companyCell = document.createElement('td');
-              companyCell.textContent = company.companyName;
-              const tickerCell = document.createElement('td');
-              tickerCell.textContent = company.stockTicker;
-              const priceCell = document.createElement('td');
-              priceCell.textContent = company.stockPrice;
-              row.appendChild(companyCell);
-              row.appendChild(tickerCell);
-              row.appendChild(priceCell);
-              table.appendChild(row);
-            });
-
-            resultsDiv.appendChild(table);
-          } else {
-            const noResultsMessage = document.createElement('p');
-            noResultsMessage.textContent = 'No matching companies found.';
-            resultsDiv.appendChild(noResultsMessage);
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          const errorMessage = document.createElement('p');
-          errorMessage.textContent = 'An error occurred while processing the request.';
-          document.getElementById('results').appendChild(errorMessage);
+                    if (companies.length > 0) {
+                        const table = document.createElement('table');
+                        table.innerHTML = `
+                            <tr>
+                                <th>Company</th>
+                                <th>Ticker</th>
+                                <th>Price</th>
+                            </tr>
+                        `;
+                        companies.forEach(company => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${company.companyName}</td>
+                                <td>${company.stockTicker}</td>
+                                <td>${company.stockPrice.toFixed(2)}</td>
+                            `;
+                            table.appendChild(row);
+                        });
+                        resultsDiv.appendChild(table);
+                    } else {
+                        resultsDiv.textContent = 'No matching companies found.';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    resultsDiv.textContent = 'An error occurred while processing the request.';
+                });
         });
-    });
-  </script>
+    </script>
 </body>
 </html>
