@@ -9,19 +9,45 @@
       width: 80%;
       max-width: 800px;
       line-height: 1.6;
+      background-color: #f4f4f4;
     }
     h1 {
       color: #333;
       text-align: center;
+      margin-bottom: 30px;
     }
     .result {
-      background-color: #f4f4f4;
+      background-color: #fff;
       padding: 20px;
       margin-bottom: 20px;
       border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .result p {
       margin: 0;
+    }
+    .result .company-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .result .stock-ticker {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+    .result .stock-price {
+      font-size: 18px;
+      color: #5cb85c;
+    }
+    .no-results {
+      text-align: center;
+      color: #666;
+    }
+    .error-message {
+      text-align: center;
+      color: #ff0000;
     }
   </style>
 </head>
@@ -48,14 +74,15 @@
               const resultDiv = document.createElement('div');
               resultDiv.classList.add('result');
               resultDiv.innerHTML = `
-                <p>${name}</p>
-                <p>${ticker}</p>
-                <p>${price}</p>
+                <p class="company-name">${name.replace('Company: ', '')}</p>
+                <p class="stock-ticker">${ticker.replace('Ticker: ', '')}</p>
+                <p class="stock-price">${price.replace('Price: ', '')}</p>
               `;
               resultsDiv.appendChild(resultDiv);
             });
           } else {
             const noResultsMessage = document.createElement('p');
+            noResultsMessage.classList.add('no-results');
             noResultsMessage.textContent = 'No matching companies found.';
             resultsDiv.appendChild(noResultsMessage);
           }
@@ -63,6 +90,7 @@
         .catch(error => {
           console.error('Error:', error);
           const errorMessage = document.createElement('p');
+          errorMessage.classList.add('error-message');
           errorMessage.textContent = 'An error occurred while processing the request.';
           document.getElementById('results').appendChild(errorMessage);
         });
