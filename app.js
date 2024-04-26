@@ -11,9 +11,6 @@ const url = 'mongodb+srv://kaspalanamol:pass@stock.xiozwgc.mongodb.net/';
 // Parse URL-encoded bodies
 app.use(express.urlencoded({ extended: true }));
 
-// Set EJS as the view engine
-app.set('view engine', 'ejs');
-
 // Home route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'home.html'));
@@ -39,8 +36,19 @@ app.get('/process', async (req, res) => {
     console.log('Database query completed');
     console.log('Matching companies:', companies);
 
-    // Render the process.ejs file with the matching companies
-    res.render('process', { companies });
+    // Format the search results as plain text
+    let results = '';
+    if (companies.length > 0) {
+      companies.forEach(company => {
+        results += `Company: ${company.companyName}\nTicker: ${company.stockTicker}\nPrice: $${company.stockPrice.toFixed(2)}\n\n`;
+      });
+    } else {
+      results = 'No matching companies found.';
+    }
+
+    // Send the search results as plain text
+    res.set('Content-Type', 'text/plain');
+    res.send(results);
 
     // Close the MongoDB connection
     client.close();
