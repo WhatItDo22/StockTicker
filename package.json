@@ -1,0 +1,17 @@
+{
+  "name": "stock-ticker-app",
+  "version": "1.0.0",
+  "description": "Stock ticker app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Anamol Kaspal",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.5.0"
+  },
+  "devDependencies": {}
+}
