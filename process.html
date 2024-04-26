@@ -2,6 +2,36 @@
 <html>
 <head>
   <title>Search Results</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px auto;
+      width: 80%;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #333;
+      text-align: center;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+  </style>
 </head>
 <body>
   <h1>Search Results</h1>
@@ -13,7 +43,7 @@
       const searchTerm = urlParams.get('searchTerm');
       const searchType = urlParams.get('searchType');
 
-      fetch(`/search?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
+      fetch(`/process?searchTerm=${encodeURIComponent(searchTerm)}&searchType=${searchType}`)
         .then(response => response.json())
         .then(companies => {
           const resultsDiv = document.getElementById('results');
@@ -40,7 +70,7 @@
               const tickerCell = document.createElement('td');
               tickerCell.textContent = company.stockTicker;
               const priceCell = document.createElement('td');
-              priceCell.textContent = company.stockPrice;
+              priceCell.textContent = '$' + company.stockPrice.toFixed(2);
               row.appendChild(companyCell);
               row.appendChild(tickerCell);
               row.appendChild(priceCell);
